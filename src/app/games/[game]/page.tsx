@@ -13,8 +13,8 @@ const GamePage = () => {
             .post("/api/external-user", {
                 gameName: game,
             })
-
-        console.log(response);
+        const url = response.data.url;
+        setLink(url);
     }
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const GamePage = () => {
 
     return (
         <section className="h-[100svh] w-screen">
-            <iframe src={link} className="w-full h-full" />
+            {link && <iframe src={link} className="w-full h-full" />}
         </section>
     )
 }
