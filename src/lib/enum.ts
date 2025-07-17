@@ -1,0 +1,17 @@
+export enum GameApiName {
+  ALL = "all",
+  DERBY = "derby",
+  MINI_MUTUAL_FUND = "mini_mutual_fund",
+  GUESS_FIRST_FOUR = "guess_first_four",
+  GUESS_LAST_FOUR = "guess_last_four",
+  GUESS_FIRST_EIGHT = "guess_first_eight",
+  GUESS_LAST_EIGHT = "guess_last_eight",
+  STOCK_SLOTS = "stock_slots",
+  STOCK_JACKPOT = "stock_jackpot",
+  SEVEN_UP_DOWN = "seven_up_down",
+  HEAD_TAIL = "head_tail",
+  WHEEL_OF_FORTUNE = "wheel_of_fortune",
+  AVIATOR = "aviator",
+  DICE = "dice",
+  RED_BLACK = "red_black",
+}
