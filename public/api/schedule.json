@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "data": {
+    "schedules": [
+      {
+        "id": 1,
+        "companyId": 4,
+        "gameName": "derby",
+        "startTime": "09:00",
+        "endTime": "17:00",
+        "status": "active",
+        "description": "Stock Derby Game Schedule"
+      },
+      {
+        "id": 2,
+        "companyId": 4,
+        "gameName": "seven_up_down",
+        "startTime": "10:00",
+        "endTime": "18:00",
+        "status": "active",
+        "description": "7 Up Down Game Schedule"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 1000,
+      "total": 2,
+      "totalPages": 1
+    },
+    "search": "",
+    "companyId": 4
+  },
+  "message": "Schedule retrieved successfully"
+}
