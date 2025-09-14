@@ -1,0 +1,7 @@
+{
+  "balance": 10000,
+  "userId": "1",
+  "gameName": "derby",
+  "success": true,
+  "message": "Balance retrieved successfully"
+}

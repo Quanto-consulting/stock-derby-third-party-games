@@ -9,7 +9,7 @@ export async function initializeRedis() {
       const client = await getRedisClient();
 
       // Initialize your user balances
-      await client.set("user:1:balance", "1000");
+      await client.set("user:1:balance", "10000"); // Set user 1 balance to 10000
       await client.set("user:2:balance", "500");
 
       initialized = true;
