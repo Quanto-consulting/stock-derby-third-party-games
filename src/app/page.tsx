@@ -2,17 +2,55 @@
 
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { StockDerbyGames } from "./data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 
+type RemoteGame = {
+  name: string;
+  identifier: string;
+  thumbnail: string;
+  active: boolean;
+  order?: number;
+};
+
 export default function GamingAppInterface() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [games, setGames] = useState<RemoteGame[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredGames = StockDerbyGames.filter((game) =>
-    game.title.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/external-user/games", { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`Failed to fetch games: ${res.status}`);
+        }
+        const json = await res.json();
+        if (isMounted) {
+          const list: RemoteGame[] = Array.isArray(json?.data) ? json.data : [];
+          // Only active games, sort by order if provided
+          const normalized = list
+            .filter((g) => g.active)
+            .sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+          setGames(normalized);
+        }
+      } catch (e: any) {
+        if (isMounted) setError(e?.message ?? "Unknown error");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredGames = games.filter((game) =>
+    game.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -44,7 +82,15 @@ export default function GamingAppInterface() {
 
         {/* Game Grid */}
         <div className="mt-4">
-          {filteredGames.length === 0 ? (
+          {loading ? (
+            <div className="flex flex-col justify-center items-center h-64">
+              <p className="text-gray-300 text-xl font-semibold">Loading games…</p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col justify-center items-center h-64">
+              <p className="text-red-300 text-xl font-semibold">{error}</p>
+            </div>
+          ) : filteredGames.length === 0 ? (
             <div className="flex flex-col justify-center items-center h-64">
               <p className="text-gray-300 text-xl font-semibold">
                 No games found
@@ -55,8 +101,8 @@ export default function GamingAppInterface() {
             <div className="grid xs:grid-cols-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {filteredGames.map((game) => (
                 <Link
-                  key={game.link}
-                  href={`/games/${game.gameName}`}
+                  key={game.identifier}
+                  href={`/games/${game.identifier}`}
                   className="w-full group"
                 >
                   <Card
@@ -65,8 +111,8 @@ export default function GamingAppInterface() {
                   >
                     <div className="relative w-full h-48">
                       <Image
-                        src={game.image}
-                        alt={game.title}
+                        src={game.thumbnail}
+                        alt={game.name}
                         className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                         width={500}
                         height={320}
@@ -76,11 +122,9 @@ export default function GamingAppInterface() {
                     </div>
                     <div className="p-4 flex flex-col gap-2">
                       <h2 className="text-lg font-bold text-yellow-300 group-hover:text-pink-400 transition-colors truncate">
-                        {game.title}
+                        {game.name}
                       </h2>
-                      <p className="text-sm text-gray-300 line-clamp-2">
-                        {game.description}
-                      </p>
+                      <p className="text-sm text-gray-300 line-clamp-2">&nbsp;</p>
                     </div>
                     <div className="absolute top-3 right-3 bg-yellow-400/90 text-black text-xs font-semibold px-3 py-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
                       Play Now
