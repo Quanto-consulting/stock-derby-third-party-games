@@ -38,8 +38,11 @@ export default function GamingAppInterface() {
             .sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
           setGames(normalized);
         }
-      } catch (e: any) {
-        if (isMounted) setError(e?.message ?? "Unknown error");
+      } catch (e: unknown) {
+        if (isMounted) {
+          const message = e instanceof Error ? e.message : "Unknown error";
+          setError(message);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
